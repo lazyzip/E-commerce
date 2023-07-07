@@ -1,0 +1,10 @@
+.btn-rosa-pastel {
+  background-color: #ffccdd;
+  border-color: #ffccdd;
+  color: #ffffff;
+}
+
+.btn-rosa-pastel:hover {
+  background-color: #ffb6c1;
+  border-color: #ffb6c1;
+}

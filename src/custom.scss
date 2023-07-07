@@ -1,0 +1,49 @@
+$lightPink: #ffb6c1;
+$lightBlue: #add8e6;
+$lightGreen: #90ee90;
+$lightYellow: #ffffe0;
+
+$dark: #0d0d0d;
+$lightPink: #f9dbea;
+$lightPinkHover: #f6c5d9;
+$lightPinkActive: #f3a8c2;
+$lightPinkText: #ffffff;
+
+$nav-link-color: $lightPinkText;
+$navbar-pink-color: $lightPinkText;
+$nav-link-font-size: 17px;
+$card-spacer-y: 0px;
+$card-spacer-x: 0px;
+$card-title-color: $dark;
+
+$navbar-bg: $lightPink;
+$navbar-brand-color: $nav-link-color;
+$navbar-toggler-color: $nav-link-color;
+$nav-link-hover-color: $lightPinkHover;
+$nav-link-active-color: $lightPinkActive;
+
+* {
+  font-family: Inter;
+}
+
+.card-title {
+  font-size: $nav-link-font-size;
+  letter-spacing: -0.4px;
+  line-height: 28px;
+  color: $card-title-color;
+}
+
+@import "../node_modules/bootstrap/scss/functions";
+@import "../node_modules/bootstrap/scss/variables";
+@import "../node_modules/bootstrap/scss/mixins";
+
+$body-bg: $lightBlue;
+$text-color: $dark;
+$link-color: $lightPink;
+$navbar-bg: $lightBlue;
+$navbar-brand-color: $nav-link-color;
+$navbar-toggler-color: $nav-link-color;
+$nav-link-hover-color: $lightGreen;
+$nav-link-active-color: $lightYellow;
+
+@import "../node_modules/bootstrap/scss/bootstrap";
