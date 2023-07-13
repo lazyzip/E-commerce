@@ -1,15 +1,61 @@
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 import { useQuery } from "react-query";
-import { fetchProductDetails } from "./api";
 
 function ProductDetails() {
   const { id } = useParams();
-  const { data, isLoading, isError } = useQuery(["productDetails", id], () =>
-    fetchProductDetails(String(id))
-  );
+
+  const {
+    data: productData,
+    isLoading,
+    isError,
+  } = useQuery(["productDetails", id], async () => {
+    const response = await fetch(
+      `https://api.escuelajs.co/api/v1/products/${id}`
+    );
+    if (!response.ok) {
+      throw new Error("Failed to fetch product details");
+    }
+    const data = await response.json();
+    return data;
+  });
 
   const [isAddingToCart, setIsAddingToCart] = useState(false);
+  const [cartItems, setCartItems] = useState([]);
+
+  const handleBuy = () => {
+    setIsAddingToCart(true);
+
+    // Verificar si el producto ya está en el carrito
+    const existingItem = cartItems.find((item) => item.id === id);
+
+    if (existingItem) {
+      // Si el producto ya está en el carrito, actualizar la cantidad y el precio total
+      const updatedItem = {
+        ...existingItem,
+        quantity: existingItem.quantity + 1,
+        totalPrice: existingItem.totalPrice + productData.price,
+      };
+
+      const updatedCart = cartItems.map((item) =>
+        item.id === id ? updatedItem : item
+      );
+
+      setCartItems(updatedCart);
+    } else {
+      // Si el producto no está en el carrito, agregarlo como un nuevo elemento
+      const newItem = {
+        id: id,
+        title: productData.title,
+        quantity: 1,
+        totalPrice: productData.price,
+      };
+
+      setCartItems([...cartItems, newItem]);
+    }
+
+    setIsAddingToCart(false);
+  };
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -19,56 +65,28 @@ function ProductDetails() {
     return <div>Error fetching product details</div>;
   }
 
-  const handleBuy = async () => {
-    setIsAddingToCart(true);
-    try {
-      const response = await fetch("https://fakeapi.platzi.com/cart", {
-        method: "POST",
-        body: JSON.stringify({ productId: id }),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      if (response.ok) {
-        alert(`Product added to cart: ${data.title}`);
-      } else {
-        throw new Error("Failed to add product to cart");
-      }
-    } catch (error) {
-      console.error("Error adding product to cart:", error);
-      alert("Failed to add product to cart. Please try again.");
-    } finally {
-      setIsAddingToCart(false);
-    }
-  };
-
   return (
     <div className="container mt-4">
-      <h1 className="mb-3">Product Details</h1>
-      <div className="card" style={{ background: "#F3EFEF" }}>
+      <h1 className="mb-3">Detalles del producto</h1>
+      <div className="card" style={{ background: "#FDD7E4" }}>
         <div className="card-body">
-          <h2 className="card-title">{data.title}</h2>
-          <p className="card-text">Price: {data.price}</p>
-          <p className="card-text">Description: {data.description}</p>
-          <p className="card-text">Category: {data.category.name}</p>
-          <div className="row">
-            {data.images.map((image) => (
-              <div className="col-md-4" key={image}>
-                <img
-                  src={image}
-                  alt="Product Image"
-                  className="img-fluid mb-3"
-                />
-              </div>
-            ))}
-          </div>
+          <h2 className="card-title text-pink">{productData.title}</h2>
+          <p className="card-text">Precio: {productData.price}</p>
+          <p className="card-text">Descripción: {productData.description}</p>
+          <p className="card-text">Categoría: {productData.category.name}</p>
+          <img
+            src={productData.images[0]}
+            alt="Product Image"
+            className="img-fluid mb-3"
+            style={{ maxWidth: "200px", height: "auto" }}
+          />
           <button
             className="btn btn-primary"
-            style={{ background: "#A8C7BB", borderColor: "#A8C7BB" }}
+            style={{ background: "#FDB9D8", borderColor: "#FDB9D8" }}
             onClick={handleBuy}
             disabled={isAddingToCart}
           >
-            {isAddingToCart ? "Adding to Cart..." : "Buy"}
+            {isAddingToCart ? "Adding to Cart..." : "Comprar"}
           </button>
         </div>
       </div>
